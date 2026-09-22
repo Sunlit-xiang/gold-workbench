@@ -18,7 +18,8 @@ def prepare(destination):
     for directory in DIRECTORIES:
         selected.extend(p for p in (ROOT/directory).rglob('*') if p.is_file()
                         and not any(part in ('node_modules','__pycache__','.env','.git','.deps') for part in p.relative_to(ROOT).parts)
-                        and p.suffix in ('.py','.mjs','.js','.html','.css','.json','.md','.txt','.ps1','.yml','.yaml','.svg'))
+                        and (p.suffix in ('.py','.mjs','.js','.html','.css','.json','.md','.txt','.ps1','.yml','.yaml','.svg')
+                             or (directory=='tests' and p.parent.name=='fixtures' and p.suffix=='.csv')))
     for p in selected:
         if SECRET.search(p.read_bytes()):
             raise ValueError('Potential credential detected in '+str(p.relative_to(ROOT)))
