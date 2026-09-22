@@ -1,0 +1,4 @@
+# Isolated Gold research/runtime dependencies, matched to the validated environment.
+numpy==2.2.6
+pandas==2.3.3
+tzdata==2025.2

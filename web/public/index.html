@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="color-scheme" content="dark" />
+    <title>Digital Oracle · 盘前市场气象站</title>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23d9b968'/%3E%3Ctext x='32' y='41' text-anchor='middle' font-family='Arial' font-weight='800' font-size='25' fill='%2307100f'%3EDO%3C/text%3E%3C/svg%3E" />
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <div class="ambient ambient-one"></div>
+    <div class="ambient ambient-two"></div>
+    <main class="shell">
+      <header class="topbar">
+        <div class="brand-block">
+          <div class="brand-mark">DO</div>
+          <div>
+            <p class="eyebrow">DIGITAL ORACLE</p>
+            <h1>盘前市场气象站</h1>
+          </div>
+        </div>
+        <div class="top-actions">
+          <a href="/asset.html?asset=gold" style="color:#d9b968">Gold 研究工作台 ↗</a>
+          <div id="clock" class="clock">--:--:-- UTC+8</div>
+          <div id="service-status" class="service-pill"><span></span> 检查服务</div>
+        </div>
+      </header>
+
+      <section class="hero panel">
+        <div>
+          <p class="eyebrow">PREMARKET MARKET CONTEXT</p>
+          <h2>今天，市场正在共同定价什么？</h2>
+          <p class="hero-copy">事件、美元、利率、风险资产与波动率汇成同一张天气图。Codex 负责寻找确认与背离，不生成交易指令。</p>
+        </div>
+        <button id="analyze-button" class="primary-button"><span>运行盘前分析</span><b>Ask Codex ↗</b></button>
+      </section>
+
+      <nav class="market-nav panel" aria-label="选择分析市场">
+        <button class="market-tab active" data-target="global">全球 <small>Global</small></button>
+        <button class="market-tab" data-target="equities">美股 <small>US Equities</small></button>
+        <button class="market-tab" data-target="gold">黄金 <small>Gold</small></button>
+        <button class="market-tab" data-target="eurusd">外汇 <small>EURUSD</small></button>
+        <button class="market-tab" data-target="btc">加密 <small>BTC</small></button>
+      </nav>
+
+      <section id="analysis-progress" class="progress panel hidden" aria-live="polite">
+        <div class="spinner"></div>
+        <div><strong id="progress-title">正在载入市场数据</strong><p id="progress-detail">检查事件、美元、利率、股指期货与波动率…</p></div>
+      </section>
+
+      <section class="regime-grid" aria-label="市场环境">
+        <article class="regime-card panel"><p>事件风险 <span>EVENT</span></p><strong id="regime-event">待分析</strong><small>今天什么时候可能变天</small></article>
+        <article class="regime-card panel"><p>美元环境 <span>USD</span></p><strong id="regime-usd">待分析</strong><small>全球资产的美元压力</small></article>
+        <article class="regime-card panel"><p>利率环境 <span>RATES</span></p><strong id="regime-rates">待分析</strong><small>政策与长期定价</small></article>
+        <article class="regime-card panel"><p>风险偏好 <span>RISK</span></p><strong id="regime-risk">待分析</strong><small>资金是否愿意承担风险</small></article>
+        <article class="regime-card panel"><p>波动环境 <span>VOL</span></p><strong id="regime-vol">待分析</strong><small>压缩、扩张或压力</small></article>
+        <article class="regime-card panel accent-card"><p>跨市场一致性 <span>ALIGN</span></p><strong id="regime-consistency">待分析</strong><small>独立市场是否讲同一故事</small></article>
+      </section>
+
+      <section class="content-grid">
+        <article class="panel market-table-panel">
+          <div class="section-heading"><div><p class="eyebrow">GLOBAL MARKET CORE</p><h3>跨市场数据</h3></div><button id="refresh-data" class="ghost-button">刷新数据</button></div>
+          <div class="table-wrap">
+            <table><thead><tr><th>市场</th><th>当前值</th><th>相对前收</th><th>今日变化</th><th>新鲜度</th></tr></thead><tbody id="market-table"><tr><td colspan="5" class="empty">正在载入快照…</td></tr></tbody></table>
+          </div>
+          <p id="data-note" class="data-note">所有时间与新鲜度将随数据一同显示。</p>
+        </article>
+
+        <aside class="panel events-panel">
+          <div class="section-heading"><div><p class="eyebrow">EVENT RISK</p><h3>今日重要事件</h3></div><span id="event-count" class="count-badge">0</span></div>
+          <div id="events-list" class="events-list"><p class="empty">等待经济日历数据</p></div>
+        </aside>
+      </section>
+
+      <section class="insight-grid">
+        <article class="panel narrative-card">
+          <p class="eyebrow">WHAT MARKETS ARE PRICING</p>
+          <h3 id="report-headline">尚未生成盘前背景</h3>
+          <p id="market-narrative">点击“运行盘前分析”，Codex 将读取当前数据并解释跨市场关系。</p>
+        </article>
+        <article class="panel divergence-card">
+          <p class="eyebrow">KEY DIVERGENCES</p>
+          <h3>关键背离</h3>
+          <div id="divergence-list"><p class="empty">等待 Codex 寻找异常关系</p></div>
+        </article>
+      </section>
+
+      <section class="panel asset-panel">
+        <div class="section-heading"><div><p class="eyebrow">ASSET BACKGROUND</p><h3>各市场背景</h3></div><span id="generated-time" class="timestamp">尚未生成</span></div>
+        <div id="asset-backgrounds" class="asset-backgrounds"><p class="empty">选择市场并运行分析</p></div>
+      </section>
+
+      <section class="panel ask-panel">
+        <div><p class="eyebrow">ASK ORACLE</p><h3>继续追问市场关系</h3><p>例如：为什么黄金和美元一起上涨？为什么 BTC 弱于纳指？</p></div>
+        <form id="ask-form" class="ask-form">
+          <textarea id="question-input" rows="2" maxlength="4000" placeholder="输入你想让 Codex 调查的问题…"></textarea>
+          <button class="primary-button" type="submit">Ask Codex ↗</button>
+        </form>
+        <div id="answer-box" class="answer-box hidden"></div>
+      </section>
+
+      <footer><span>Digital Oracle · Market Context only</span><span>不构成投资建议 · No trade signals</span></footer>
+    </main>
+    <script type="module" src="/app.js"></script>
+  </body>
+</html>

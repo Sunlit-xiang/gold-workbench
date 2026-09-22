@@ -1,0 +1,5 @@
+# Published numeric manifests hash bytes. Preserve original numerical source bytes.
+digital_oracle/asset_*.py -text
+digital_oracle/providers/research_history.py -text
+*.sh text eol=lf
+*.yml text eol=lf

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Intraday Market Context"
+  short_description: "Premarket cross-market context and divergence analysis"
+  default_prompt: "Use $intraday-market-context to analyze premarket context for gold."
