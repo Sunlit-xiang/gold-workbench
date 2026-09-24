@@ -2,6 +2,14 @@
 
 # Digital Oracle 📈
 
+## Gold Workbench · September 2026
+
+[Live site](https://sunlit-xiang.github.io/gold-workbench/) · [Scheduled runs](https://github.com/Sunlit-xiang/gold-workbench/actions) · [Deployment and API setup](docs/GOLD_GITHUB_DELIVERY.md)
+
+An interactive evidence river, bilingual research brief, frozen prediction ledger, automated outcomes and historical baseline comparisons. GitHub Actions collects and computes on weekdays independently of Codex or a local computer; scheduled jobs can be delayed by hours. Optional DeepSeek/Kimi commentary uses session keys or repository Secrets.
+
+The approved model remains **GC Proxy / research shadow / No validated Edge**. H4 lacks qualified data; D5 is not a weekly candle. Operational delivery is not evidence of predictive skill. Original Provider/Agent documentation follows.
+
 Digital Oracle is an open-source Skill that lets AI Agents mine macro-event trends from massive financial data.
 
 Works with OpenClaw / Claude Code / Cursor / Codex.

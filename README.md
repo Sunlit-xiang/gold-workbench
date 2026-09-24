@@ -2,6 +2,14 @@
 
 # Digital Oracle 📈
 
+## Gold 可运行工作台 · 2026-09-24
+
+[打开已部署网站](https://sunlit-xiang.github.io/gold-workbench/) · [自动运行记录](https://github.com/Sunlit-xiang/gold-workbench/actions) · [部署与 API 配置](docs/GOLD_GITHUB_DELIVERY.md)
+
+黄金证据河流图、中英文六模块报告、H4/D1/D3/D5研究判断、不可改写的预测账本和自动结果评价已上线。工作日由 GitHub Actions 采集和计算，不依赖 Codex 或本地电脑开机；调度可能延迟数小时。DeepSeek/Kimi 只提供可选解释，密钥请在页面配置窗口或 GitHub Secrets 中设置。
+
+当前为 **GC Proxy 研究影子模型，未证明稳定 Edge**。H4 数据不足，D5不是周线形态。代码可运行与预测有效是两个独立验收标准。以下保留原 Provider/Agent 项目说明。
+
 Digital Oracle 是一款让 AI Agent 基于金融市场数据研究长期问题和盘前市场背景的开源 Skill。
 
 适用于 OpenClaw / Claude Code / Cursor / Codex。

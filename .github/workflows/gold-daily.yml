@@ -55,8 +55,9 @@ jobs:
           set -euo pipefail
           test -n "$ORACLE_STATE_KEY"
           mkdir -p .delivery
-          asset=$(gh api "repos/$GITHUB_REPOSITORY/releases/tags/gold-state" --jq '[.assets[] | select(.name | endswith(".encrypted"))] | sort_by(.created_at) | last | .name')
-          test "$asset" != null
+          release_id=$(gh api "repos/$GITHUB_REPOSITORY/releases/tags/gold-state" --jq .id)
+          asset=$(gh api --paginate "repos/$GITHUB_REPOSITORY/releases/$release_id/assets?per_page=100" --jq '.[] | select(.name | endswith(".encrypted")) | [.created_at,.name] | @tsv' | sort | tail -n 1 | cut -f 2)
+          test -n "$asset"
           gh release download gold-state --repo "$GITHUB_REPOSITORY" --pattern "$asset" --dir .delivery
           python scripts/gold_state.py unpack --db research_data/oracle.sqlite --archive ".delivery/$asset"
       - name: Run daily research or rebuild approved archive
@@ -71,7 +72,7 @@ jobs:
             python scripts/gold_cloud.py
           fi
       - name: Preserve encrypted append-only state even if collection fails
-        if: always() && steps.restore.outcome == 'success'
+        if: always() && steps.restore.outcome == 'success' && (github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.collect))
         run: |
           python scripts/gold_state.py pack --db research_data/oracle.sqlite --archive .delivery/state-${{ github.run_id }}-${{ github.run_attempt }}.encrypted
           gh release upload gold-state .delivery/state-${{ github.run_id }}-${{ github.run_attempt }}.encrypted --repo "$GITHUB_REPOSITORY"

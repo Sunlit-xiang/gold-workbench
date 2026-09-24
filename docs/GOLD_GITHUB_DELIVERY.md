@@ -6,6 +6,8 @@ GitHub Actions → restore authenticated encrypted SQLite → collect Yahoo/FRED
 
 Pages hosts static files, not a Python server. It remains readable without Codex or a local computer. Weekday collection is scheduled at **06:17 UTC / 14:17 Beijing**. GitHub schedules may run late and public-repository schedules can be disabled after 60 days without repository activity; monitor Actions, keep an external heartbeat if unattended for longer. The page marks stale forecasts after 96 hours. This is scheduled daily research, not realtime pricing.
 
+Observed in production: the September 22 and 23 scheduled runs started around 11:36 UTC, over five hours after the configured time. This hosting tier does not guarantee a premarket deadline. Use a dedicated scheduler/host if a strict deadline becomes a requirement.
+
 ## Research boundary
 
 The existing `Gold.GCProxy.G001.shadow` numerical code and parameters remain frozen. Delivery modules do not fit or promote a model. All horizon forecasts still have `No Edge`. D5 is five observed sessions after the first observed close strictly after the UTC issue date; it is not a weekly candle or next-Friday forecast. H4 lacks qualified hourly data. Neutral does not predict a sideways market.

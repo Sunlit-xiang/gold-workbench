@@ -17,11 +17,17 @@ export function ledgerStats(rows, horizon, model='all') {
   const voiced=eligible.filter(p=>['Positive','Negative'].includes(p.direction));
   const evaluated=selected.filter(p=>p.outcome?.status==='evaluated');
   const tested=evaluated.filter(p=>['Positive','Negative'].includes(p.direction));
+  const intervals=evaluated.filter(p=>p.outcome?.baseline?.date&&p.outcome?.endpoint?.date)
+    .map(p=>({start:p.outcome.baseline.date,end:p.outcome.endpoint.date})).sort((a,b)=>a.end.localeCompare(b.end));
+  const uniqueIntervals=new Set(intervals.map(i=>i.start+':'+i.end));
+  let lastEnd='', nonoverlap=0;
+  for(const i of intervals){if(i.start>=lastEnd){nonoverlap++;lastEnd=i.end;}}
   return {n:selected.length, eligible:eligible.length, voiced:voiced.length, evaluated:evaluated.length,
     coverage:eligible.length?voiced.length/eligible.length:null,
     operationalCoverage:selected.length?voiced.length/selected.length:null,
     hitRate:tested.length?tested.filter(p=>p.outcome.directional_hit===true).length/tested.length:null,
-    tested:tested.length, edges:selected.filter(p=>p.edge==='Edge').length};
+    tested:tested.length, uniqueIntervals:uniqueIntervals.size, nonoverlap,
+    edges:selected.filter(p=>p.edge==='Edge').length};
 }
 export function isStale(issuedAt, now=Date.now()) {
   const stamp=Date.parse(issuedAt);

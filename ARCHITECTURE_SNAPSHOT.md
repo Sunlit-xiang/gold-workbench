@@ -1,5 +1,16 @@
 # Digital Oracle — Project Status / Architecture Snapshot
 
+## 2026-09-24 GitHub 交付增量（当前状态）
+
+- 正式工作台：https://sunlit-xiang.github.io/gold-workbench/ 。代码：https://github.com/Sunlit-xiang/gold-workbench 。原作者 origin 保持不变；发布工作副本位于 `.delivery/repository`，采用明确文件白名单和凭据扫描。
+- Gold 工作台已改成原始事实 → 数学变换/贡献 → 因子族 → 最终判断的可展开河流图。支持中英文、真实尺度参数、截距单列、H4/D1/D3/D5、六模块研究报告、账本筛选/CSV、历史基线与留出验证。
+- 新 `gold_delivery.py` 只包装已冻结模型，不重训、不修改 G001 参数或历史。API 配置支持 DeepSeek、Kimi 国际/中国，临时密钥仅内存；后台自动解读使用 GitHub Secrets，默认未配置 AI 时仍完整运行确定性流程。
+- GitHub Actions 工作日计划 UTC06:17 运行；2026-09-22/23 实际触发约 UTC11:36，证明调度可延迟数小时，不能承诺准点盘前。两日云端采集均成功；截至9月23日云端归档24条预测、3条到期结果，12个数据源无连接错误。这些是运行验收，不是预测优势证明。
+- 状态持久化：`gold-state` Release 保存 Fernet 认证加密的 SQLite 快照，密钥只在 `ORACLE_STATE_KEY` Secret。恢复检查 SQLite 和内容 hash；失败不重置账本。公开 `ledger` 分支保存冻结预测和追加结果，防止改写或丢失历史。原始数据不作为明文网页发布。
+- 同一未来区间可能对应多条周末/跨日冻结，页面另报不同区间及不重叠区间数；原始记录命中率不能冒充独立样本统计。D5是契约基准之后5个观测日，不是周线形态；Neutral不代表预测震荡。
+- 本地服务仍可运行，原 `.sqlite` 留作研究副本。云端上线后以线上账本为交付权威，避免合并已分叉的本地/云端预测。
+- 部署和恢复详情：`docs/GOLD_GITHUB_DELIVERY.md`。GC Proxy/严格PIT/换月/H4/No Edge等研究限制仍保留。原始数据许可、长期备份容量与调度健康需要持续管理。
+
 ## 2026-09-18 实施增量（优先于下文旧快照）
 
 Gold G001现已实现：`asset_store.py`（append-only SQLite与hash）、`providers/research_history.py`（12条输入序列，Yahoo/FRED/CFTC三类上游）、`asset_model.py`（Gold配置、34片叶节点、6个方向研究块、确定性评分）、`asset_research.py`（成熟标签walk-forward/基线/消融/块区间）、`asset_pipeline.py`（发布影子版本、冻结、到期追加和统计）。统一CLI为`scripts/asset_pipeline.py`。

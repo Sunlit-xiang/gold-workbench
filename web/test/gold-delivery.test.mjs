@@ -28,3 +28,9 @@ test('local AI gateway blocks cross-origin requests and arbitrary endpoints',asy
     assert.equal(calls,2);
   }finally{await new Promise(r=>server.close(r));}
 });
+
+test('multiple frozen calls on the same future interval do not inflate independent support',()=>{
+  const make=(start,end)=>({horizon:'D1',score:.5,direction:'Positive',outcome:{status:'evaluated',directional_hit:true,baseline:{date:start},endpoint:{date:end}}});
+  const result=ledgerStats([make('2026-09-21','2026-09-22'),make('2026-09-21','2026-09-22'),make('2026-09-22','2026-09-23')],'D1');
+  assert.equal(result.evaluated,3);assert.equal(result.uniqueIntervals,2);assert.equal(result.nonoverlap,2);
+});
