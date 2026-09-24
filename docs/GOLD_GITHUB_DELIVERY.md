@@ -48,3 +48,7 @@ Potential future experiment: preregister a policy-surprise / price-response vari
 `python scripts/gold_cloud.py --collect` runs the same collection/evaluation/freeze/export job locally, using the approved model.
 
 `node web/server.mjs` serves the existing local site plus `/asset.html` and the same-origin optional AI gateway. Set `PORT`, `PYTHON_COMMAND`, `ORACLE_DB` as needed. The original six-module Market Context route remains in the local app; the Pages bundle opens Gold directly.
+
+On September 24 the exact legacy Windows task `DigitalOracle-Gold-Daily` was disabled after verifying two successful cloud schedules. It is recoverable with `Enable-ScheduledTask`, but do not run two authoritative ledgers or merge divergent same-day IDs. The local database is preserved as a research copy and the local page links to the authoritative cloud workbench. The separate local workbench-startup task remains unchanged.
+
+Delivery checks: 268 Python tests and 9 Node tests passed locally. Linux Actions also runs these before publication. Local browser interactions verified language switching, real-yield operand drilldown, provider presets and frozen ledger. Public HTML and JSON return HTTP 200; the cloud ledger has real appended outcomes. Optional paid AI calls have not been live-tested without a configured key.
