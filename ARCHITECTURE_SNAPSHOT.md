@@ -3,6 +3,7 @@
 ## 2026-10-06 Vercel / 按需研究 WR-P3（优先于下方历史状态）
 
 - 交互部署项目 `macro-war-room`；FastAPI 同域页面/API，服务端 Secret，不依赖 Codex、浏览器本地服务或 GitHub 手工点任务。
+- 生产入口 https://macro-war-room-pi.vercel.app/ 。`09115ff` 部署已 READY，首页/JS/CSS、资产 API、Gold 只读归档已授权 HTTP 验证。当前缺少 AI Secret、数据库连接与访问密码；真实团队运行及云端持久化仍待统一配置验收，不把可读网页上线混同研究闭环完成。
 - 首页「开始研究」：Research Pack → Director → Specialists → Skeptic → Director 审阅/有限补证 → Chief Researcher。Vercel Python Workflow beta 拆分独立阶段；PostgreSQL 独立研究 schema 保存 append-only 原件、会话与 checkpoint。
 - AI 只按需运行，GitHub 每日任务保留基础数据和确定性 Gold 账本，移除所有团队/单研究员/自动 AI commentary 调用及其 Secret 注入。
 - Pack 先刷新登记 Provider，冻结实际值、时间、来源、变换、PIT 原归档与缺口。模型只能在读过证据、说明特定缺口后查询可信官方域名；不提供自由联网扫描市场工具。

@@ -143,8 +143,8 @@ def board(store, asset="gold", language="zh", now=None):
         'debate_empty': pick(('团队尚未完成讨论，没有可展示的真实分歧。' if not analyzed else '未记录合格分歧；这并不代表研究结论已被证明。',
                              'The team has not completed discussion; no genuine debate is available.' if not analyzed else 'No qualified disagreement recorded; this does not prove the conclusion.'), language),
         'watch': [s for s in sections if s['kind'] == 'watch'][:3],
-        'global_coverage': pick(('当前是有限来源的黄金宏观研究，不是完整全球新闻扫描；没有归档事件不代表没有事件。',
-                                'This is source-limited gold macro research, not comprehensive global news coverage; absence in the archive is not absence of events.'), language),
+        'global_coverage': pick(('当前是有限来源的资产宏观研究，不是完整全球新闻扫描；没有归档事件不代表没有事件。',
+                                'This is source-limited asset macro research, not comprehensive global news coverage; absence in the archive is not absence of events.'), language),
     }
     return {"asset": view["asset"], "asset_id": asset, "snapshot_id": view["id"], "snapshot_as_of": view["as_of"],
             "served_at": view["served_at"], "snapshot_health": view["snapshot_health"], "language": language,

@@ -1,5 +1,8 @@
 # Macro War Room · Vercel / WR-P3
 
+入口：[Macro War Room](https://macro-war-room-pi.vercel.app/)。项目：[Vercel macro-war-room](https://vercel.com/sunlit-xiangs-projects/macro-war-room)。
+部署保护保持启用；如出现登录页，用项目所属的 Vercel 账号访问。
+
 ## 产品边界
 
 打开网站 → 选择 Gold（GC Proxy）或 AUDNZD → 开始研究 → 显示真实团队阶段 → Chief Researcher Brief。
@@ -39,6 +42,10 @@ AI 首先读取资料包中的证据。只有读过证据并明确写出待填�
 Vercel 默认部署保护可能要求先登录同一 Vercel 账号；不要为测试绕开或关闭账号级保护。
 
 ## 验证与剩余验收
+
+2026-10-06：生产部署 `09115ff` 已 READY，授权 HTTP 读回首页 HTML、JS、CSS 均为 200；Gold / AUDNZD API 与 Gold 只读归档接口为 200。修复了 Vercel bytecode 路径导致的静态文件 503，并显式打包 `web/public/**`。
+本机同一 FastAPI 应用已验证首屏、点击开始研究进入配置提示、无模型密钥输入框。Codex 浏览器对 Vercel 域名导航返回 client block，不能据此宣称线上浏览器端到端验收完成。
+六个新增云端契约测试、既有 Python 与前端测试分别验收；模拟模型只出现在测试中。用户决定最后统一配置，当前生产未设置上述三项，不存在真实 AI 团队结果。
 
 自动测试覆盖无 Secret 状态、同源/访问保护、浏览器密钥参数拒绝、资料刷新失败、禁止 Gold 写表、真实 schema 的团队调用/工具引用、Chief 交接及已完成 checkpoint 重用。
 测试中的模型和存储替身只证明代码契约，不代表真实 DeepSeek 或云端 PostgreSQL 已验证。
