@@ -11,6 +11,7 @@ from digital_oracle.macro_core import ASSETS
 from digital_oracle.macro_pipeline import collect_macro, macro_dashboard
 from digital_oracle.macro_ai import research
 from digital_oracle.upstream import track
+from digital_oracle.war_room import board
 
 ROOT=Path(__file__).resolve().parents[1]
 
@@ -19,14 +20,16 @@ def export_macro(db,output):
     store=MacroStore(db)
     try:
         dest=Path(output);data=dest/"data";data.mkdir(parents=True,exist_ok=True)
-        for name in ("macro.html","macro.js","macro.css"):
+        for name in ("macro.html","macro.js","macro.css","war-room.html","war-room.js","war-room.css","war-room-demo.js"):
             shutil.copyfile(ROOT/"web/public"/name,dest/name)
-        shutil.copyfile(ROOT/"web/public/macro.html",dest/"index.html")
+        shutil.copyfile(ROOT/"web/public/war-room.html",dest/"index.html")
         snapshots=data/"macro-snapshots";snapshots.mkdir(exist_ok=True)
         for row in store.list("macro_snapshots",100000):
             (snapshots/(row["id"]+".json")).write_text(canonical(row),encoding="utf-8")
         for asset in ASSETS:
             (data/("macro-"+asset+".json")).write_text(canonical(macro_dashboard(store,asset)),encoding="utf-8")
+            for language in ('zh','en'):
+                (data/(f"war-room-{asset}-{language}.json")).write_text(canonical(board(store,asset,language)),encoding="utf-8")
     finally:store.close()
 
 

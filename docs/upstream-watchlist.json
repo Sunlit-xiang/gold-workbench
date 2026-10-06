@@ -1,14 +1,207 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "reviewed_at": "2026-10-06",
   "policy": "Observe only. Never automatically install, update the reviewed baseline, or promote a model.",
   "projects": [
-    {"repository":"TauricResearch/TradingAgents","baseline":"1394a3f72aa4393e1a98f51b382434c4b4c2d972","license":"Apache-2.0","paths":["tradingagents/dataflows","tradingagents/llm_clients","tradingagents/memory","tradingagents/agents/schemas.py"],"adoption":"architecture only"},
-    {"repository":"AI4Finance-Foundation/FinRobot","baseline":"2717499b8e30f242640af08c4ad9afd1113c2d45","license":"Apache-2.0","paths":["finrobot_autogen/finrobot/agents","finrobot_equity/core/src/modules"],"adoption":"architecture only"},
-    {"repository":"AI4Finance-Foundation/FinGPT","baseline":"fdb04c9a273d1ccc3764b09b8e3ed1e708e57566","license":"MIT","paths":["fingpt/FinGPT_RAG","tests"],"adoption":"research only"},
-    {"repository":"xt2201/finmem","baseline":"a6fb1fe9d2947023397ba3c6d5746049c4e432e2","license":"MIT","paths":["puppy/memorydb.py","puppy/memory_functions"],"adoption":"architecture only"},
-    {"repository":"microsoft/qlib","baseline":"be725493eb1a6bbb42bf11b37aa7669f59610ff1","license":"MIT","paths":["qlib/data/pit.py","tests/test_pit.py","qlib/workflow"],"adoption":"architecture only"},
-    {"repository":"microsoft/RD-Agent","baseline":"484776c211e4fbbeef03e0ec00d6bbee7362a4f4","license":"MIT","paths":["rdagent/core/proposal.py","rdagent/components/workflow","rdagent/utils/env"],"adoption":"architecture only"},
-    {"repository":"openbq-org/OpenBB","original_repository":"OpenBB-finance/OpenBB","baseline":"ae0268771f761b036996d81bd21522ce79d95415","license":"Apache-2.0 (LICENSE text; GitHub labels Other)","paths":["cli/openbb_cli/codegen","cookiecutter"],"adoption":"architecture only"}
+    {
+      "repository": "deepseek-ai/deepseek-harness",
+      "baseline": "5badb15009ae1756c3afe0ae0cef1faafc290ccc",
+      "license": "MIT",
+      "baseline_origin": "Public HEAD observed 2026-10-06; monitoring anchor only, not an approved runtime",
+      "paths": [
+        "packages/core",
+        "packages/agent",
+        "packages/llm",
+        "packages/tools",
+        "packages/tool",
+        "packages/session",
+        "packages/sdk",
+        "packages/client",
+        "packages/bundle",
+        "packages/subagent",
+        "packages/experimental",
+        "packages/mcp",
+        "packages/context",
+        "packages/preset",
+        "packages/web",
+        "apps/web"
+      ],
+      "architecture_paths": {
+        "prompt": [
+          "packages/core/system-prompt",
+          "packages/core/agent-instructions",
+          "packages/agent",
+          "packages/context/agent-instructions",
+          "packages/preset"
+        ],
+        "agent_loop": [
+          "packages/core/agent",
+          "packages/core/agent-loop"
+        ],
+        "session_memory": [
+          "packages/session",
+          "packages/core/session"
+        ],
+        "provider": [
+          "packages/llm"
+        ],
+        "tool_permissions": [
+          "packages/tools",
+          "packages/tool",
+          "packages/mcp",
+          "packages/core/tools",
+          "packages/web"
+        ],
+        "routing_team": [
+          "packages/subagent",
+          "packages/experimental"
+        ],
+        "ui": [
+          "packages/client",
+          "packages/bundle/web-app",
+          "apps/web"
+        ],
+        "sdk_schema": [
+          "packages/sdk"
+        ]
+      },
+      "adoption": "architecture and isolated optional runtime; no automatic installation",
+      "installed_build_commit": "04f392c9ddd144fa426da2045178797da6db6c11",
+      "installed_version": "0.2.0-rc.2",
+      "installed_commit_public_status": "422 No commit found; do not equate installed build with public HEAD"
+    },
+    {
+      "repository": "TauricResearch/TradingAgents",
+      "baseline": "1394a3f72aa4393e1a98f51b382434c4b4c2d972",
+      "license": "Apache-2.0",
+      "paths": [
+        "tradingagents/dataflows",
+        "tradingagents/llm_clients",
+        "tradingagents/memory",
+        "tradingagents/agents",
+        "tradingagents/graph"
+      ],
+      "architecture_paths": {
+        "prompt": [
+          "tradingagents/agents"
+        ],
+        "routing_team": [
+          "tradingagents/graph"
+        ],
+        "session_memory": [
+          "tradingagents/memory"
+        ],
+        "provider": [
+          "tradingagents/llm_clients"
+        ],
+        "tool_permissions": [
+          "tradingagents/dataflows"
+        ]
+      },
+      "adoption": "architecture only"
+    },
+    {
+      "repository": "AI4Finance-Foundation/FinRobot",
+      "baseline": "2717499b8e30f242640af08c4ad9afd1113c2d45",
+      "license": "Apache-2.0",
+      "paths": [
+        "finrobot_autogen/finrobot/agents",
+        "finrobot_autogen/finrobot/toolkits",
+        "finrobot_equity/core/src/modules"
+      ],
+      "architecture_paths": {
+        "prompt_routing_session": [
+          "finrobot_autogen/finrobot/agents"
+        ],
+        "tool_permissions": [
+          "finrobot_autogen/finrobot/toolkits"
+        ],
+        "structured_output": [
+          "finrobot_equity/core/src/modules"
+        ]
+      },
+      "adoption": "architecture only"
+    },
+    {
+      "repository": "AI4Finance-Foundation/FinGPT",
+      "baseline": "fdb04c9a273d1ccc3764b09b8e3ed1e708e57566",
+      "license": "MIT",
+      "paths": [
+        "fingpt/FinGPT_RAG",
+        "tests"
+      ],
+      "adoption": "research only"
+    },
+    {
+      "repository": "xt2201/finmem",
+      "baseline": "a6fb1fe9d2947023397ba3c6d5746049c4e432e2",
+      "license": "MIT",
+      "paths": [
+        "puppy"
+      ],
+      "architecture_paths": {
+        "session_memory": [
+          "puppy/memorydb.py",
+          "puppy/memory_functions"
+        ],
+        "prompt": [
+          "puppy/prompts",
+          "puppy/agent.py"
+        ]
+      },
+      "adoption": "architecture only"
+    },
+    {
+      "repository": "microsoft/qlib",
+      "baseline": "be725493eb1a6bbb42bf11b37aa7669f59610ff1",
+      "license": "MIT",
+      "paths": [
+        "qlib/data/pit.py",
+        "tests/test_pit.py",
+        "qlib/workflow"
+      ],
+      "architecture_paths": {
+        "pit_workflow": [
+          "qlib/data/pit.py",
+          "qlib/workflow"
+        ]
+      },
+      "adoption": "architecture only"
+    },
+    {
+      "repository": "microsoft/RD-Agent",
+      "baseline": "484776c211e4fbbeef03e0ec00d6bbee7362a4f4",
+      "license": "MIT",
+      "paths": [
+        "rdagent/core",
+        "rdagent/components",
+        "rdagent/utils/env",
+        "rdagent/scenarios"
+      ],
+      "architecture_paths": {
+        "routing_team": [
+          "rdagent/core",
+          "rdagent/components/workflow"
+        ],
+        "prompt": [
+          "rdagent/scenarios"
+        ],
+        "tool_permissions": [
+          "rdagent/utils/env"
+        ]
+      },
+      "adoption": "architecture only"
+    },
+    {
+      "repository": "openbq-org/OpenBB",
+      "original_repository": "OpenBB-finance/OpenBB",
+      "baseline": "ae0268771f761b036996d81bd21522ce79d95415",
+      "license": "Apache-2.0 (LICENSE text; GitHub labels Other)",
+      "paths": [
+        "cli/openbb_cli/codegen",
+        "cookiecutter"
+      ],
+      "adoption": "architecture only"
+    }
   ]
 }

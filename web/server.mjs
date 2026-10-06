@@ -128,7 +128,7 @@ async function analyze({ target, question, session, threadId, snapshot }) {
 }
 
 async function serveStatic(requestUrl, response) {
-  const pathname = requestUrl.pathname === "/" ? "/macro.html" : requestUrl.pathname;
+  const pathname = requestUrl.pathname === "/" ? "/war-room.html" : requestUrl.pathname;
   const decoded = decodeURIComponent(pathname);
   const filePath = path.resolve(publicRoot, `.${decoded}`);
   if (!filePath.startsWith(publicRoot + path.sep)) {
@@ -200,7 +200,22 @@ export function runMacro(command, input={}) {
   });
 }
 
-export function createServer({ snapshotRunner = runSnapshot, analyzer = analyze, assetReader = runAssetDashboard, goldReader = runGoldDelivery, macroReader = runMacro } = {}) {
+export function runWarRoom(command,input={}) {
+  return new Promise((resolve,reject)=>{
+    const args=['scripts/war_room.py',command,'--asset',input.asset||'gold','--language',input.language||'zh'];
+    if(process.env.ORACLE_DB)args.push('--db',process.env.ORACLE_DB);
+    const child=spawn(pythonCommand,args,{cwd:projectRoot,windowsHide:true,env:{...process.env,PYTHONIOENCODING:'utf-8'},stdio:['pipe','pipe','pipe']});
+    const chunks=[];let size=0;
+    const timer=setTimeout(()=>{child.kill();reject(new Error('Research interval timed out; check interrupted session before retry'));},command==='team'?1200000:330000);
+    child.stdout.on('data',c=>{size+=c.length;if(size>16*1024*1024){child.kill();reject(new Error('Research response exceeded byte budget'));}else chunks.push(c);});
+    child.stderr.resume();
+    child.on('error',()=>{clearTimeout(timer);reject(new Error('Research runtime unavailable'));});
+    child.on('close',code=>{clearTimeout(timer);if(code!==0)return reject(new Error('Research runtime failed; archive and Gold model unchanged'));try{resolve(JSON.parse(Buffer.concat(chunks).toString('utf8')));}catch{reject(new Error('Invalid research response'));}});
+    child.stdin.end(command==='board'?'':JSON.stringify(input));
+  });
+}
+
+export function createServer({ snapshotRunner = runSnapshot, analyzer = analyze, assetReader = runAssetDashboard, goldReader = runGoldDelivery, macroReader = runMacro, warRoomReader = runWarRoom } = {}) {
   let researchInFlight=false;
   return createHttpServer(async (request, response) => {
     const requestUrl = new URL(request.url || "/", `http://${request.headers.host || "localhost"}`);
@@ -212,6 +227,36 @@ export function createServer({ snapshotRunner = runSnapshot, analyzer = analyze,
         }
       }
       const macroMatch=requestUrl.pathname.match(/^\/api\/macro\/(gold|audnzd|eurusd|usdjpy)$/);
+      const roomMatch=requestUrl.pathname.match(/^\/api\/war-room\/(gold|audnzd|eurusd|usdjpy)$/);
+      const analystMatch=requestUrl.pathname.match(/^\/api\/war-room\/(gold|audnzd|eurusd|usdjpy)\/analysts\/(director|liquidity|rates|cross_asset|events|gold|fx|skeptic|chief)$/);
+      if(request.method==='GET'&&analystMatch){
+        const host=request.headers.host||'',origin=request.headers.origin;
+        if(!/^(127\.0\.0\.1|localhost)(:\d+)?$/.test(host)||(origin&&origin!==`http://${host}`)){json(response,403,{error:'Private session is loopback/same-origin only'});return;}
+        const language=requestUrl.searchParams.get('language')||'zh',identity=requestUrl.searchParams.get('snapshot_id');
+        if(!['zh','en'].includes(language)||!/^[a-f0-9]{64}$/.test(identity||'')){json(response,400,{error:'Invalid session contract'});return;}
+        json(response,200,await warRoomReader('analyst',{asset:analystMatch[1],analyst:analystMatch[2],language,snapshot_id:identity}));return;
+      }
+      if(request.method==='GET'&&roomMatch){
+        const language=requestUrl.searchParams.get('language')||'zh';
+        if(!['zh','en'].includes(language)){json(response,400,{error:'Invalid language'});return;}
+        json(response,200,await warRoomReader('board',{asset:roomMatch[1],language}));return;
+      }
+      if(request.method==='POST'&&['/api/war-room/research','/api/war-room/ask'].includes(requestUrl.pathname)){
+        const body=await readJsonBody(request),asking=requestUrl.pathname.endsWith('/ask');
+        const fields=['asset','provider','model','language','snapshot_id',...(asking?['analyst','question']:[])];
+        if(Object.keys(body).some(k=>!fields.includes(k))||!ASSET_REGISTRY.some(a=>a.id===body.asset)||
+           !['off','deepseek','kimi','kimi-cn','openai','openai-compatible'].includes(body.provider)||
+           !['zh','en'].includes(body.language)||typeof body.model!=='string'||body.model.length>100||
+           !/^[a-f0-9]{64}$/.test(body.snapshot_id||'')||
+           (asking&&(!['director','liquidity','rates','cross_asset','events','gold','fx','skeptic','chief'].includes(body.analyst)||
+              typeof body.question!=='string'||!body.question.trim()||body.question.length>4000))){
+          json(response,400,{error:'Invalid research contract; credentials and URLs stay server-side'});return;
+        }
+        if(researchInFlight){json(response,429,{error:'A research interval is already running'});return;}
+        researchInFlight=true;
+        try{json(response,200,await warRoomReader(asking?'ask':'team',body));}finally{researchInFlight=false;}
+        return;
+      }
       if(request.method==='GET'&&macroMatch){json(response,200,await macroReader('dashboard',{asset:macroMatch[1]}));return;}
       const macroSnapshot=requestUrl.pathname.match(/^\/api\/macro\/snapshots\/([a-f0-9]{64})$/);
       if(request.method==='GET'&&macroSnapshot){json(response,200,await macroReader('snapshot',{id:macroSnapshot[1]}));return;}

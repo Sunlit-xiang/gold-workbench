@@ -5,7 +5,8 @@ from .asset_store import AssetStore
 class MacroStore(AssetStore):
     # Never add macro datasets to the legacy model's 'datasets' table.
     TABLES = ("macro_payloads", "macro_evidence", "macro_events", "macro_snapshots",
-              "macro_reactions", "macro_ai", "upstream_observations", "upstream_reviews")
+              "macro_reactions", "macro_ai", "upstream_observations", "upstream_reviews",
+              "research_sessions", "research_requests", "research_turns", "research_materials", "research_runs")
 
     def as_of(self, table, instant, limit=10000):
         from datetime import datetime

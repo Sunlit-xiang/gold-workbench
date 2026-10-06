@@ -202,6 +202,30 @@ class UpstreamTests(unittest.TestCase):
         row=inspect_project(self.project,fetch=fail,checked_at=NOW)
         self.assertEqual(row['status'],'UNKNOWN');self.assertNotIn('sensitive',json.dumps(row))
 
+    def test_architecture_paths_boundary_and_rename(self):
+        from digital_oracle.upstream import architecture_areas
+        project={**self.project,'architecture_paths':{'prompt':['agents/prompts'],'session':['sessions']}}
+        self.assertEqual(architecture_areas(project,'agents/prompts-old/x.py'),[])
+        self.assertEqual(architecture_areas(project,'archive/x.py','agents/prompts/x.py'),['prompt'])
+        self.assertEqual(architecture_areas(project,'sessions'),['session'])
+
+    def test_architecture_case_has_manual_gates_and_incomplete_diff(self):
+        project={**self.project,'architecture_paths':{'prompt':['data']}}
+        def fetch(path):
+            value=self.fixture(path)
+            if '/compare/' in path:value['status']='diverged'
+            return value
+        with tempfile.TemporaryDirectory() as folder:
+            store=MacroStore(Path(folder)/'x.sqlite')
+            with patch('digital_oracle.upstream.WATCHLIST',Path(folder)/'watch.json'):
+                Path(folder,'watch.json').write_text(json.dumps({'policy':'observe','projects':[project]}),encoding='utf-8')
+                track(store,fetch,NOW)
+            case=store.list('upstream_reviews')[0]
+            self.assertEqual(case['kind'],'ARCHITECTURE_REVIEW')
+            self.assertEqual(case['architecture_areas'],['prompt'])
+            self.assertEqual(case['diff_coverage'],'INCOMPLETE')
+            self.assertEqual(case['gates'][-1],'human_approval');store.close()
+
     def test_release_update_requires_review_even_without_new_head(self):
         prior={'status':'available','head':'b'*40,'release':{'tag_name':'old'},'license_blob':'license-new'}
         row=inspect_project(self.project,prior,self.fixture,NOW)

@@ -36,6 +36,7 @@ jobs:
       TRADING_ECONOMICS_API_KEY: ${{ secrets.TRADING_ECONOMICS_API_KEY }}
       ORACLE_AI_PROVIDER: ${{ vars.ORACLE_AI_PROVIDER || 'off' }}
       ORACLE_AI_MODEL: ${{ vars.ORACLE_AI_MODEL }}
+      ORACLE_TEAM_ENABLED: ${{ vars.ORACLE_TEAM_ENABLED || '0' }}
       PYTHONUTF8: '1'
     steps:
       - uses: actions/checkout@v4

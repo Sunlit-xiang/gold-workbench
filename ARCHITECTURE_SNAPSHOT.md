@@ -1,5 +1,22 @@
 # Digital Oracle — Project Status / Architecture Snapshot
 
+## 2026-10-06 产品校准增量：Macro War Room WR-P2
+
+- 默认首页改为 Situation Room：背景阅读 / 最重要的变化 / 团队分歧 / 下一观察点 → Morning Brief → 研究团队与信息流 → 行情和证据。不是原始指标监控页。
+- 新增 Liquidity、Inflation/Rates、Cross Asset，与 Director、资产研究员及 Skeptic 共同工作；研究桌显示任务、判断、自评 Confidence、支持/反对、已读资料、团队关系与追问。自评不是历史命中率。
+- Director 派题 → 成员取证 → Skeptic → Director 审阅 → 最多两个补证 → 最终晨会；Session 和所有报告只追加。旧 WR-P1 不回写。云端 Variable `ORACLE_TEAM_ENABLED=1` 可选择该流程，默认关闭以避免意外成本。
+- 没有真实 AI 报告为 **NOT YET ANALYZED**。单独 DEMO / MOCK 场景只用于交互验收，不调用研究 API、不写账本、不冒充实盘事实。原 DSH 未变更，独立 app-layer runtime 已实现，可选 DSH 接口仍未实现。
+- 本机实际浏览器验收覆盖首屏、研究桌、演示追问、退出演示；真实 Provider 晨会/持续问答尚未验收。详见[产品验收](docs/WAR_ROOM_PRODUCT_ACCEPTANCE.md)、[外部机制取舍](docs/WAR_ROOM_PRIOR_ART_REVIEW.md)。
+- 原 Gold 模型批准计算 hash 未变、本机二十条冻结预测不变。本段优先于下方历史“新团队尚未实现”的状态；公开部署另以实际工作流验收为准。
+
+## 2026-10-06 Macro War Room 工作进展（未完成交付）
+
+- 已实际体验本机首页；原始值/缺口领先于可读研究结论，无可恢复研究员交互。过去五个观测期的变化不是二十四小时变化。
+- 本机F:/DSH为0.2.0-rc.2安装包，隔离提取并审读真实Agent/Prompt/SDK源码。禁用shell、独立home的实际initialize/shutdown成功，无模型调用，安装hash未变；不是完整Agent或桌面验收。
+- 固定版本TradingAgents/FinRobot源码级prompt审查，借鉴任务/证据/预算/交接，拒绝多空角色投票、stock偏置和任意代码执行。见[审查](docs/PROMPT_AGENT_ARCHITECTURE_REVIEW.md)。
+- 本地upstream升级architecture路径分类/rename/不完整diff与人工门槛，新增DSH观测；[架构](docs/AGENT_ARCHITECTURE_WATCH.md)。安装build在公开GitHub不可查，不能混同公开HEAD。相关31个Python测试通过；尚未发布新版云端。
+- Gold模型计算文件、参数和历史冻结记录未修改。晨会Board、真实Research Team与persistent ASK仍为当前进行中的目标，不因完成上述审计而关闭目标。
+
 ## 2026-10-06 Macro Evidence & Pricing 增量（优先于下方历史状态）
 
 - 首页迁移为共享 Macro Core → Gold / Country A vs B → 事实、冻结预期、定价、反应、冲突与研究缺口。Gold 与 AUDNZD 有真实数据页；EURUSD/USDJPY 有参考价格和国家档案，数据完整度不作虚假保证。
@@ -8,6 +25,7 @@
 - AI通过服务端环境/GitHubSecrets配置DeepSeek/Kimi/OpenAI-compatible等，有限工具自行选择证据/检索记忆，输出引用式假设。旧浏览器BYOK已取消；本页以下“临时密钥内存”仅为历史说明，不再适用。
 - 本轮本机12源Gold采集成功，ECB跨汇率与Fed/ECB官方feed可用；RBA/RBNZ源本机失败、NZ月度隔夜停更被明确显示UNKNOWN/STALE。缺乏发布前共识、OIS与事件分钟报价，不伪造pricing/reaction或预测Edge。
 - 维护入口：[Architecture](docs/ARCHITECTURE.md)、[Prior art](docs/PRIOR_ART_REVIEW.md)、[Data model](docs/DATA_MODEL.md)、[Data sources](docs/DATA_SOURCES.md)、[AI](docs/AI_ARCHITECTURE.md)、[Gold](docs/GOLD_MODEL.md)、[FX](docs/FX_MODEL.md)、[Migration](docs/MIGRATION_NOTES.md)。测试与部署验收另见本轮最终报告，历史下文不代表当前统计。
+- 实际验收：297个Python测试、11个Node测试通过；云端发布与完整采集两次成功，记录[37433062259](https://github.com/Sunlit-xiang/gold-workbench/actions/runs/37433062259)、[37433582634](https://github.com/Sunlit-xiang/gold-workbench/actions/runs/37433582634)。公开HTTP读回四资产及冻结快照成功，原56条预测内容hash不变，今日追加后共60条；未把工程成功解释为预测有效。详情见[本轮验证](docs/VERIFICATION_2026-10-06.md)。
 
 ## 2026-09-24 GitHub 交付增量（当前状态）
 

@@ -1,6 +1,7 @@
 """Cloud daily run: restore approved state, collect, freeze, evaluate and export."""
 import argparse
 import json
+import os
 from pathlib import Path
 import sys
 
@@ -11,6 +12,7 @@ from digital_oracle.gold_delivery import export_site
 from digital_oracle.macro_store import MacroStore
 from digital_oracle.macro_pipeline import collect_macro, macro_dashboard
 from digital_oracle.macro_ai import research as macro_research
+from digital_oracle.research_team import daily_team
 from digital_oracle.upstream import track
 from macro_workbench import export_macro
 
@@ -43,7 +45,10 @@ def main():
                 collect_macro(macro,store)
                 for asset in ('gold','audnzd'):
                     for language in ('zh','en'):
-                        macro_research(macro_dashboard(macro,asset),macro,language=language)
+                        if os.environ.get('ORACLE_TEAM_ENABLED') == '1':
+                            daily_team(macro_dashboard(macro,asset),macro,language=language)
+                        else:
+                            macro_research(macro_dashboard(macro,asset),macro,language=language)
             if args.upstream or not macro.latest('upstream_observations'):track(macro)
         finally:macro.close()
         result=export_site(store,args.output)

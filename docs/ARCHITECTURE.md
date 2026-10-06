@@ -1,5 +1,15 @@
 # Macro Evidence & Pricing Workbench · MEP-1.0
 
+## Macro War Room 增量设计（2026-10-06，实施中）
+
+产品校准：默认首页是 **Macro War Room**，按 Situation → Interpretation → Evidence 阅读；行情与原始指标下移。真实研究未执行显示 **NOT YET ANALYZED**；单独的 **DEMO / MOCK** 只验证交互，不写账本。研究桌包括问题、可读解释、已读资料、支持/反对证据、团队关系与持续追问。
+
+WR-P2 流程：Director 派题 → Liquidity / Inflation-Rates / Cross Asset / 资产 Specialist → Skeptic → Director 审阅 → 最多两个补证 → Director 晨会。报告、补证和新解释均追加，旧报告不覆盖。Confidence 是未校准的自评，不是 Accuracy。来源核对与取舍见 [External Prior-Art Review](WAR_ROOM_PRIOR_ART_REVIEW.md)。真实 Provider 端到端仍待有效凭据验证，不把模拟通过称为真实分析完成。
+
+DSH真实运行/源码结论见 [Prompt / Agent Architecture Review](PROMPT_AGENT_ARCHITECTURE_REVIEW.md)。金融底座继续保留，新增独立研究应用层；可选DSH独立profile，不修改安装包或通用应用，不成为云端依赖。当前 War Room 使用独立 app-layer Python Session；DSH 交互适配器尚未实现。
+
+外部源码持续学习升级为 [Agent Architecture Watch](AGENT_ARCHITECTURE_WATCH.md)：周度调度 → 版本/许可证与路径diff → 追加架构Review Case → 源码审查/隔离原型/验证/人工批准。只观察不自动采用，新增DSH安装身份和公开观测锚点分离。
+
 2026-10-06。目标是主动研究事实、预期、定价与反应，而不是为用户已有立场找证据。运行无需 Codex；没有 AI 密钥时继续采集、计算、归档与展示。
 
 ## 一张架构图

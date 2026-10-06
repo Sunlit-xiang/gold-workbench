@@ -13,6 +13,13 @@ from .asset_store import digest
 WATCHLIST = Path(__file__).resolve().parents[1] / "docs/upstream-watchlist.json"
 
 
+def architecture_areas(project, *paths):
+    """Path boundaries matter; a renamed-out file still changes its old subsystem."""
+    return sorted(area for area, prefixes in project.get("architecture_paths", {}).items()
+                  if any(path == prefix.rstrip("/") or path.startswith(prefix.rstrip("/") + "/")
+                         for path in paths if path for prefix in prefixes))
+
+
 def github_get(path):
     headers = {"User-Agent": "DigitalOracle-Upstream/1", "Accept": "application/vnd.github+json",
                "X-GitHub-Api-Version": "2022-11-28"}
@@ -62,10 +69,21 @@ def inspect_project(project, previous=None, fetch=github_get, checked_at=None):
         if result["changed"]:
             delta = fetch(f"repos/{canonical_repo}/compare/{prior_head}...{head['sha']}")
             files = delta.get("files", [])
-            result["changes"] = [{"path": f["filename"], "status": f["status"],
-                                  "research_relevant": any(f["filename"].startswith(p) for p in project["paths"])} for f in files]
+            result["changes"] = [{"path": f["filename"], "previous_path": f.get("previous_filename"),
+                                  "status": f["status"],
+                                  "architecture_areas": architecture_areas(project, f["filename"], f.get("previous_filename")),
+                                  "research_relevant": any(path.startswith(p) for path in
+                                      (f["filename"], f.get("previous_filename", "")) for p in project["paths"])} for f in files]
             result["compare_truncated"] = len(files) >= 300
             result["ahead_by"] = delta.get("ahead_by")
+            result["compare_status"] = delta.get("status", "unknown")
+            # GitHub can omit files for diverged/backward comparisons; silence is not proof.
+            result["diff_coverage"] = "INCOMPLETE" if (result["compare_truncated"] or
+                result["compare_status"] in ("diverged", "behind")) else "API_FILE_LIST"
+        result["architecture_areas"] = sorted({area for change in result["changes"]
+                                               for area in change.get("architecture_areas", [])})
+        result["architecture_review_required"] = bool(result["architecture_areas"] or
+                                                       result.get("diff_coverage") == "INCOMPLETE")
         result["license_changed"] = bool(previous and previous.get("license_blob") and previous["license_blob"] != result["license_blob"])
         # Public advisories only. No advisory is not proof of security.
         try:
@@ -104,7 +122,13 @@ def track(store, fetch=github_get, now=None):
             case=digest({k:row.get(k) for k in ("repository","head","license_blob","release","new_public_advisories","archived")})
             if not store.get("upstream_reviews",case):
                 store.put("upstream_reviews",{"case_id":case,"repository":row["repository"],"observation_id":row["id"],
-                          "available_at":stamp,"state":"PENDING","policy":"Manual isolated review and experiment; no auto promotion"},case)
+                          "available_at":stamp,"state":"PENDING",
+                          "kind":"ARCHITECTURE_REVIEW" if row.get("architecture_review_required") else "UPSTREAM_REVIEW",
+                          "architecture_areas":row.get("architecture_areas",[]),
+                          "changed_paths":[change for change in row["changes"] if change.get("architecture_areas")],
+                          "diff_coverage":row.get("diff_coverage"),
+                          "gates":["source_review","isolated_prototype","verification","human_approval"],
+                          "policy":"Manual isolated review and experiment; no auto promotion"},case)
         results.append(row)
     return {"checked_at": stamp, "projects": results, "policy": watchlist["policy"]}
 

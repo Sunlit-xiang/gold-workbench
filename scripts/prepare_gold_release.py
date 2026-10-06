@@ -7,7 +7,8 @@ import shutil
 ROOT=Path(__file__).resolve().parents[1]
 DIRECTORIES=('digital_oracle','scripts','tests','web','docs','references','skills','.github')
 FILES=('LICENSE','README.md','README.en.md','SKILL.md','AGENTS.md','ARCHITECTURE_SNAPSHOT.md',
-       '.gitignore','.gitattributes','.env.example','requirements-gold.txt','requirements-delivery.txt')
+       '.gitignore','.gitattributes','.env.example','requirements-gold.txt','requirements-delivery.txt',
+       'dsh/macro-readonly.patch.yml')
 SECRET=re.compile(rb'(?:sk-[A-Za-z0-9_-]{24,}|gh[pousr]_[A-Za-z0-9]{25,}|github_pat_[A-Za-z0-9_]{30,}|-----BEGIN (?:RSA |OPENSSH |EC )?PRIVATE KEY-----)')
 
 
