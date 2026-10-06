@@ -20,7 +20,9 @@ from warroom_cloud.pack import read_public
 from warroom_cloud.workflows import team_research, bounded_call
 
 app=FastAPI(docs_url=None,redoc_url=None,openapi_url=None)
-PUBLIC=Path(__file__).resolve().parent/'web/public'
+# Vercel precompiles modules: __file__ can live under __pycache__, whereas
+# the documented runtime working directory remains the project root.
+PUBLIC=(Path.cwd() if os.getenv('VERCEL') else Path(__file__).resolve().parent)/'web/public'
 ASSETS={'gold','audnzd'}
 COOKIE='oracle_owner'
 
@@ -112,7 +114,7 @@ def capabilities(request: Request):
 async def login(request: Request):
     same_origin(request); value=await body(request);supplied=value.get('password','')
     if len(password())<20: raise HTTPException(503,'WAR_ROOM_PASSWORD 尚未配置（至少20位）')
-    if not isinstance(supplied,str) or not hmac.compare_digest(supplied,password()): raise HTTPException(401,'Invalid owner password')
+    if not isinstance(supplied,str) or not hmac.compare_digest(supplied.encode(),password().encode()): raise HTTPException(401,'Invalid owner password')
     response=JSONResponse({'authenticated':True})
     response.set_cookie(COOKIE,signed_cookie(int(time.time())+12*3600),httponly=True,
                         secure=request.url.scheme=='https',samesite='strict',max_age=12*3600,path='/api/war-room')

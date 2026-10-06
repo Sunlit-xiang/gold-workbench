@@ -70,6 +70,20 @@ class CloudTests(unittest.TestCase):
                 r=client.post('/api/war-room/research',json={'asset':'gold','request_id':'request-placeholder-123'},headers={'Origin':'https://testserver'})
                 self.assertEqual(r.status_code,503);self.assertFalse(r.json()['work_done'])
 
+    def test_real_static_assets_and_owner_unicode(self):
+        from fastapi.testclient import TestClient
+        import app
+        with TestClient(app.app,base_url='https://testserver') as client:
+            for path,kind in (('/','text/html'),('/war-room.js','javascript'),('/war-room.css','text/css')):
+                r=client.get(path)
+                self.assertEqual(r.status_code,200,path)
+                self.assertIn(kind,r.headers['content-type'])
+                self.assertGreater(len(r.content),1000)
+            self.assertEqual(client.get('/app.py').status_code,404)
+            with patch.dict(os.environ,{'WAR_ROOM_PASSWORD':'工作台密码请使用随机长字符串-1234567890'}):
+                r=client.post('/api/war-room/login',json={'password':os.environ['WAR_ROOM_PASSWORD']},headers={'Origin':'https://testserver'})
+                self.assertEqual(r.status_code,200)
+
     def test_pack_refresh_failure_is_not_neutral_and_never_rewrites_seed(self):
         from warroom_cloud.pack import assemble
         seed={'asset_id':'gold','snapshot':{'id':'old','as_of':'2025-01-01T00:00:00+00:00'},'dataset':{'series':{}},'pit_history':[]}

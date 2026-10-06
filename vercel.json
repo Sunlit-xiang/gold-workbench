@@ -5,6 +5,7 @@
   "functions": {
     "app.py": {
       "maxDuration": 300,
+      "includeFiles": "web/public/**",
       "excludeFiles": "{research_data/**,.delivery/**,.vercel-dev/**,.deps/**,web/node_modules/**,tests/**,references/**,engines/**}"
     }
   }
