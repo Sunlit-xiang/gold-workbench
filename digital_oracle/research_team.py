@@ -141,7 +141,7 @@ def run_analyst(view, store, analyst, question, *, language="zh", provider=None,
     tid = digest({"session": sid, "sequence": seq})
     # Unique immutable admission prevents concurrent processes silently starting the same slot.
     store.put("research_requests", {"session_id": sid, "sequence": seq, "request_id": uuid.uuid4().hex,
-              "question": question, "available_at": utcnow()}, tid)
+              "question": question, "phase":phase, "available_at": utcnow()}, tid)
     prior = [r for r in reversed(store.list("research_turns", 100000)) if r["session_id"] in (sid, base_sid)]
     history = [m for r in prior if r["status"] == "available" for m in r["messages"]]
     if len(canonical(history)) > 120_000:

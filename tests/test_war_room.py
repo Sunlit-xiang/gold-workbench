@@ -11,6 +11,20 @@ NOW = '2026-10-06T08:00:00+00:00'
 
 
 class BoardTests(unittest.TestCase):
+    def test_actual_pending_daily_admission_visible_but_private_question_not_exported(self):
+        with tempfile.TemporaryDirectory() as folder:
+            store=MacroStore(Path(folder)/'x.sqlite');view=build_asset('gold',{}, {},NOW)
+            sid=store.put('macro_snapshots',view)
+            for scope in ('daily','private'):
+                session=store.put('research_sessions',{'snapshot_id':sid,'analyst':'liquidity','language':'zh','prompt_version':PROMPT_VERSION,'audience':scope})
+                store.put('research_requests',{'session_id':session,'question':'调查流动性。' if scope=='daily' else 'PRIVATE USER QUESTION','phase':'plan','available_at':NOW})
+            result=board(store,'gold','zh',NOW)
+            self.assertEqual(result['research_run']['process'][0]['status'],'awaiting_result')
+            self.assertEqual(result['situation']['status'],'NOT YET ANALYZED')
+            self.assertNotIn('PRIVATE USER QUESTION',str(result))
+            self.assertEqual(result['research_run']['reports'],[])
+            store.close()
+
     def test_final_director_does_not_erase_member_questions_or_original_reports(self):
         with tempfile.TemporaryDirectory() as folder:
             store=MacroStore(Path(folder)/'x.sqlite');view=build_asset('gold',{}, {},NOW)

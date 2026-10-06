@@ -6,7 +6,7 @@ from datetime import timedelta
 from .macro_ai import config
 from .macro_core import instant
 from .macro_pipeline import macro_dashboard
-from .research_team import PROMPT_VERSION, ROLES
+from .research_team import PROMPT_VERSION, ROLES, public_report
 
 LABELS = {
     "gold": ("黄金连续期货代理", "Gold continuous futures proxy"),
@@ -98,6 +98,25 @@ def board(store, asset="gold", language="zh", now=None):
     runs = [r for r in store.list("research_runs", 10000) if r["snapshot_id"] == view["id"] and r["language"] == language
             and r["prompt_version"] == PROMPT_VERSION]
     run = runs[0] if runs else None
+    # Render actual admitted daily work while a run is underway. Private questions
+    # never enter this public reading layer. An unfinished request is not proof that
+    # a model is actively thinking (it may have been interrupted).
+    sessions = {s['id']:s for s in store.list('research_sessions',100000)
+                if s.get('audience') == 'daily' and s['snapshot_id'] == view['id'] and s['language'] == language and s['prompt_version'] == PROMPT_VERSION}
+    requests = sorted((r for r in store.list('research_requests',100000) if r['session_id'] in sessions
+                       and (not run or instant(r['available_at']) > instant(run['available_at']))),key=lambda r:r['available_at'])
+    if requests:
+        active_reports=[]; process=[]
+        for request in requests:
+            role=sessions[request['session_id']]['analyst']; phase=request.get('phase','plan')
+            turn=store.get('research_turns',request['id'])
+            if turn:
+                active_reports.append(public_report({'id':request['id'],**turn}))
+            stage=('assignment' if role=='director' and phase=='plan' else 'synthesis' if phase=='final' else
+                   'review' if role=='director' else 'critique' if role=='skeptic' else 'supplement' if phase=='review' else 'investigation')
+            process.append({'report_id':request['id'],'analyst':role,'question':request['question'],'stage':stage,
+                            'status':turn['status'] if turn else 'awaiting_result','available_at':request['available_at']})
+        run={'status':'awaiting_completion','reports':active_reports,'process':process,'prompt_version':PROMPT_VERSION}
     reports = {r["analyst"]: r for r in (run or {}).get("reports", [])}
     assignments = {a['analyst']:a['question'] for r in (run or {}).get('reports',[]) for a in r.get('assignments',[])}
     assignments.update({p['analyst']:p['question'] for p in (run or {}).get('process',[]) if p['stage'] in ('investigation','supplement')})
