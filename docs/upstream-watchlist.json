@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "reviewed_at": "2026-10-06",
+  "policy": "Observe only. Never automatically install, update the reviewed baseline, or promote a model.",
+  "projects": [
+    {"repository":"TauricResearch/TradingAgents","baseline":"1394a3f72aa4393e1a98f51b382434c4b4c2d972","license":"Apache-2.0","paths":["tradingagents/dataflows","tradingagents/llm_clients","tradingagents/memory","tradingagents/agents/schemas.py"],"adoption":"architecture only"},
+    {"repository":"AI4Finance-Foundation/FinRobot","baseline":"2717499b8e30f242640af08c4ad9afd1113c2d45","license":"Apache-2.0","paths":["finrobot_autogen/finrobot/agents","finrobot_equity/core/src/modules"],"adoption":"architecture only"},
+    {"repository":"AI4Finance-Foundation/FinGPT","baseline":"fdb04c9a273d1ccc3764b09b8e3ed1e708e57566","license":"MIT","paths":["fingpt/FinGPT_RAG","tests"],"adoption":"research only"},
+    {"repository":"xt2201/finmem","baseline":"a6fb1fe9d2947023397ba3c6d5746049c4e432e2","license":"MIT","paths":["puppy/memorydb.py","puppy/memory_functions"],"adoption":"architecture only"},
+    {"repository":"microsoft/qlib","baseline":"be725493eb1a6bbb42bf11b37aa7669f59610ff1","license":"MIT","paths":["qlib/data/pit.py","tests/test_pit.py","qlib/workflow"],"adoption":"architecture only"},
+    {"repository":"microsoft/RD-Agent","baseline":"484776c211e4fbbeef03e0ec00d6bbee7362a4f4","license":"MIT","paths":["rdagent/core/proposal.py","rdagent/components/workflow","rdagent/utils/env"],"adoption":"architecture only"},
+    {"repository":"openbq-org/OpenBB","original_repository":"OpenBB-finance/OpenBB","baseline":"ae0268771f761b036996d81bd21522ce79d95415","license":"Apache-2.0 (LICENSE text; GitHub labels Other)","paths":["cli/openbb_cli/codegen","cookiecutter"],"adoption":"architecture only"}
+  ]
+}

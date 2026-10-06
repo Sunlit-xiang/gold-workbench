@@ -13,7 +13,12 @@ const port = Number(process.env.PORT || 3000);
 const pythonCommand = process.env.PYTHON_COMMAND || "python";
 const codexTimeoutMs = Number(process.env.CODEX_TIMEOUT_MS || 360_000);
 let codex;
-const ASSET_REGISTRY = [{ id: "gold", name: "Gold · GC Proxy", url: "/asset.html?asset=gold" }];
+const ASSET_REGISTRY = [
+  { id: "gold", name: "Gold · GC Proxy", url: "/macro.html?asset=gold" },
+  { id: "audnzd", name: "AUDNZD · Relative Macro", url: "/macro.html?asset=audnzd" },
+  { id: "eurusd", name: "EURUSD · Profile preview", url: "/macro.html?asset=eurusd" },
+  { id: "usdjpy", name: "USDJPY · Profile preview", url: "/macro.html?asset=usdjpy" },
+];
 
 const MIME_TYPES = {
   ".html": "text/html; charset=utf-8",
@@ -123,10 +128,10 @@ async function analyze({ target, question, session, threadId, snapshot }) {
 }
 
 async function serveStatic(requestUrl, response) {
-  const pathname = requestUrl.pathname === "/" ? "/index.html" : requestUrl.pathname;
+  const pathname = requestUrl.pathname === "/" ? "/macro.html" : requestUrl.pathname;
   const decoded = decodeURIComponent(pathname);
   const filePath = path.resolve(publicRoot, `.${decoded}`);
-  if (!filePath.startsWith(publicRoot)) {
+  if (!filePath.startsWith(publicRoot + path.sep)) {
     json(response, 403, { error: "forbidden" });
     return;
   }
@@ -181,10 +186,44 @@ function runGoldDelivery(command, input = null) {
   });
 }
 
-export function createServer({ snapshotRunner = runSnapshot, analyzer = analyze, assetReader = runAssetDashboard, goldReader = runGoldDelivery } = {}) {
+export function runMacro(command, input={}) {
+  return new Promise((resolve,reject)=>{
+    const args=['scripts/macro_workbench.py',command,'--asset',input.asset||'gold'];
+    if(process.env.ORACLE_DB)args.push('--db',process.env.ORACLE_DB);
+    if(command==='snapshot')args.push('--id',input.id);
+    if(command==='research')for(const field of ['provider','model','language'])if(input[field])args.push('--'+field,input[field]);
+    const child=spawn(pythonCommand,args,{cwd:projectRoot,windowsHide:true,env:{...process.env,PYTHONIOENCODING:'utf-8'},stdio:['ignore','pipe','pipe']});
+    const chunks=[];let size=0;const timer=setTimeout(()=>{child.kill();reject(new Error('Macro runtime timed out'));},210000);
+    child.stdout.on('data',c=>{size+=c.length;if(size>16*1024*1024)child.kill();else chunks.push(c);});
+    child.stderr.resume();child.on('error',()=>{clearTimeout(timer);reject(new Error('Macro runtime unavailable'));});
+    child.on('close',code=>{clearTimeout(timer);if(code!==0)return reject(new Error('Macro runtime failed; inspect data health'));try{resolve(JSON.parse(Buffer.concat(chunks).toString('utf8')));}catch{reject(new Error('Invalid macro response'));}});
+  });
+}
+
+export function createServer({ snapshotRunner = runSnapshot, analyzer = analyze, assetReader = runAssetDashboard, goldReader = runGoldDelivery, macroReader = runMacro } = {}) {
+  let researchInFlight=false;
   return createHttpServer(async (request, response) => {
     const requestUrl = new URL(request.url || "/", `http://${request.headers.host || "localhost"}`);
     try {
+      if(request.method==='POST'){
+        const host=request.headers.host||'',origin=request.headers.origin;
+        if(!/^(127\.0\.0\.1|localhost)(:\d+)?$/.test(host)||(origin&&origin!==`http://${host}`)){
+          json(response,403,{error:'Same-origin local requests only'});return;
+        }
+      }
+      const macroMatch=requestUrl.pathname.match(/^\/api\/macro\/(gold|audnzd|eurusd|usdjpy)$/);
+      if(request.method==='GET'&&macroMatch){json(response,200,await macroReader('dashboard',{asset:macroMatch[1]}));return;}
+      const macroSnapshot=requestUrl.pathname.match(/^\/api\/macro\/snapshots\/([a-f0-9]{64})$/);
+      if(request.method==='GET'&&macroSnapshot){json(response,200,await macroReader('snapshot',{id:macroSnapshot[1]}));return;}
+      if(request.method==='POST'&&requestUrl.pathname==='/api/macro/research'){
+        if(!String(request.headers['content-type']).startsWith('application/json')){json(response,415,{error:'JSON required'});return;}
+        const body=await readJsonBody(request);
+        if(Object.keys(body).some(k=>!['asset','provider','model','language'].includes(k))||
+           !ASSET_REGISTRY.some(a=>a.id===body.asset)||!['off','deepseek','kimi','kimi-cn','openai','openai-compatible'].includes(body.provider)||
+           !['zh','en'].includes(body.language)||typeof body.model!=='string'||body.model.length>100){json(response,400,{error:'Invalid settings. Keys and URLs are server-side only.'});return;}
+        if(researchInFlight){json(response,429,{error:'One research request at a time'});return;}
+        researchInFlight=true;try{json(response,200,await macroReader('research',body));}finally{researchInFlight=false;}return;
+      }
       if (request.method === "GET" && requestUrl.pathname === "/api/gold/dashboard") {
         json(response, 200, await goldReader("dashboard"));
         return;
@@ -200,10 +239,10 @@ export function createServer({ snapshotRunner = runSnapshot, analyzer = analyze,
           json(response,415,{error:"JSON required"});return;
         }
         const body=await readJsonBody(request);
-        if (!['deepseek','kimi','kimi-cn'].includes(body.provider) || !['zh','en'].includes(body.language) || typeof body.model!=='string' || body.model.length>100 || typeof body.api_key!=='string' || body.api_key.length>512) {
+        if (!['deepseek','kimi','kimi-cn'].includes(body.provider) || !['zh','en'].includes(body.language) || typeof body.model!=='string' || body.model.length>100 || (body.api_key !== undefined && body.api_key !== '') || Object.keys(body).some(k=>!['provider','language','model','api_key'].includes(k))) {
           json(response,400,{error:"Invalid provider settings"});return;
         }
-        json(response,200,await goldReader("commentary",{provider:body.provider,model:body.model,language:body.language,api_key:body.api_key}));return;
+        json(response,200,await goldReader("commentary",{provider:body.provider,model:body.model,language:body.language}));return;
       }
       if (request.method === "GET" && requestUrl.pathname === "/api/assets") {
         json(response, 200, { assets: ASSET_REGISTRY });
@@ -211,11 +250,11 @@ export function createServer({ snapshotRunner = runSnapshot, analyzer = analyze,
       }
       const assetMatch = requestUrl.pathname.match(/^\/api\/assets\/([a-z][a-z0-9_-]{0,30})$/);
       if (request.method === "GET" && assetMatch && ASSET_REGISTRY.some(asset => asset.id === assetMatch[1])) {
-        json(response, 200, await assetReader(assetMatch[1]));
+        json(response, 200, assetMatch[1] === 'gold' ? await assetReader('gold') : await macroReader('dashboard',{asset:assetMatch[1]}));
         return;
       }
       const predictionMatch = requestUrl.pathname.match(/^\/api\/assets\/([a-z][a-z0-9_-]{0,30})\/predictions\/([a-f0-9]{64})$/);
-      if (request.method === "GET" && predictionMatch && ASSET_REGISTRY.some(asset => asset.id === predictionMatch[1])) {
+      if (request.method === "GET" && predictionMatch && predictionMatch[1] === 'gold') {
         json(response, 200, await assetReader(predictionMatch[1], predictionMatch[2]));
         return;
       }

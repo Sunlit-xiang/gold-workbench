@@ -1,5 +1,14 @@
 # Digital Oracle — Project Status / Architecture Snapshot
 
+## 2026-10-06 Macro Evidence & Pricing 增量（优先于下方历史状态）
+
+- 首页迁移为共享 Macro Core → Gold / Country A vs B → 事实、冻结预期、定价、反应、冲突与研究缺口。Gold 与 AUDNZD 有真实数据页；EURUSD/USDJPY 有参考价格和国家档案，数据完整度不作虚假保证。
+- 新增宏观表与原 Gold 模型/账本隔离，仍在同一认证加密SQLite内恢复。既有 `asset_*.py` 和历史Provider批准计算字节未修改，未重训或晋级，不把宏观解释当新预测。
+- 七个实际隔离阅读的外部项目固定研究commit，周日UTC05:23通过GitHub Actions持续跟踪HEAD/release/许可证/公开安全公告。新变更追加持久PENDING审查，后续无更新不自动关闭；不安装、不改基线、不改权重。
+- AI通过服务端环境/GitHubSecrets配置DeepSeek/Kimi/OpenAI-compatible等，有限工具自行选择证据/检索记忆，输出引用式假设。旧浏览器BYOK已取消；本页以下“临时密钥内存”仅为历史说明，不再适用。
+- 本轮本机12源Gold采集成功，ECB跨汇率与Fed/ECB官方feed可用；RBA/RBNZ源本机失败、NZ月度隔夜停更被明确显示UNKNOWN/STALE。缺乏发布前共识、OIS与事件分钟报价，不伪造pricing/reaction或预测Edge。
+- 维护入口：[Architecture](docs/ARCHITECTURE.md)、[Prior art](docs/PRIOR_ART_REVIEW.md)、[Data model](docs/DATA_MODEL.md)、[Data sources](docs/DATA_SOURCES.md)、[AI](docs/AI_ARCHITECTURE.md)、[Gold](docs/GOLD_MODEL.md)、[FX](docs/FX_MODEL.md)、[Migration](docs/MIGRATION_NOTES.md)。测试与部署验收另见本轮最终报告，历史下文不代表当前统计。
+
 ## 2026-09-24 GitHub 交付增量（当前状态）
 
 - 正式工作台：https://sunlit-xiang.github.io/gold-workbench/ 。代码：https://github.com/Sunlit-xiang/gold-workbench 。原作者 origin 保持不变；发布工作副本位于 `.delivery/repository`，采用明确文件白名单和凭据扫描。

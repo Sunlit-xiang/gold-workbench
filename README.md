@@ -2,11 +2,19 @@
 
 # Digital Oracle 📈
 
+## Macro Evidence & Pricing Workbench · 2026-10-06
+
+[打开工作台](https://sunlit-xiang.github.io/gold-workbench/) · [架构与持续上游跟踪](docs/ARCHITECTURE.md) · [外部源码研究](docs/PRIOR_ART_REVIEW.md) · [数据契约](docs/DATA_MODEL.md) · [数据能力](docs/DATA_SOURCES.md) · [AI安全配置](docs/AI_ARCHITECTURE.md)
+
+首页研究事实、预期、定价与市场反应，保存支持、反对和冲突证据，不强迫猜方向。Gold与AUDNZD共用可展开河流、来源/公式追踪和冻结档案，EURUSD/USDJPY有国家档案预览。七个已研究GitHub项目按周自动跟踪，更新需要隔离审查与实验，不自动替换模型。既有Gold定量实验室与预测账本保留。
+
+AI密钥仅配置在服务端环境变量或GitHubSecrets，前端不接收密钥；公开Pages只展示自动任务生成的研究。当前没有合格OIS与事件分钟报价，明确显示INSUFFICIENT PRICING DATA / NO CLEAR EDGE。以下为旧版本说明，不应把“数字先知”的宣传措辞当成有效市场或预测能力证明。
+
 ## Gold 可运行工作台 · 2026-09-24
 
 [打开已部署网站](https://sunlit-xiang.github.io/gold-workbench/) · [自动运行记录](https://github.com/Sunlit-xiang/gold-workbench/actions) · [部署与 API 配置](docs/GOLD_GITHUB_DELIVERY.md)
 
-黄金证据河流图、中英文六模块报告、H4/D1/D3/D5研究判断、不可改写的预测账本和自动结果评价已上线。工作日由 GitHub Actions 采集和计算，不依赖 Codex 或本地电脑开机；调度可能延迟数小时。DeepSeek/Kimi 只提供可选解释，密钥请在页面配置窗口或 GitHub Secrets 中设置。
+黄金证据河流图、中英文六模块报告、H4/D1/D3/D5研究判断、不可改写的预测账本和自动结果评价保留。工作日由 GitHub Actions 采集和计算，不依赖 Codex 或本地电脑开机；调度可能延迟数小时。DeepSeek/Kimi 只提供可选解释，密钥仅在服务端环境变量或 GitHub Secrets 中设置。
 
 当前为 **GC Proxy 研究影子模型，未证明稳定 Edge**。H4 数据不足，D5不是周线形态。代码可运行与预测有效是两个独立验收标准。以下保留原 Provider/Agent 项目说明。
 

@@ -2,11 +2,17 @@
 
 # Digital Oracle 📈
 
+## Macro Evidence & Pricing Workbench · 2026-10-06
+
+[Workbench](https://sunlit-xiang.github.io/gold-workbench/) · [Architecture / upstream monitoring](docs/ARCHITECTURE.md) · [Prior art](docs/PRIOR_ART_REVIEW.md) · [Data contracts](docs/DATA_MODEL.md) · [AI configuration](docs/AI_ARCHITECTURE.md)
+
+Shared Macro Core, asset-specific Gold and relative FX evidence, frozen archives and an inspectable evidence river. Seven reviewed GitHub repositories are monitored weekly without automatic installation or model promotion. The existing Gold quantitative lab and ledger remain separate. No qualified OIS/event quotes means insufficient pricing data, not a fabricated forecast. Keys belong only in server environment variables or Actions Secrets; Pages displays archived AI research, not an interactive AI backend. Older descriptions below are historical, not claims of validated prediction quality.
+
 ## Gold Workbench · September 2026
 
 [Live site](https://sunlit-xiang.github.io/gold-workbench/) · [Scheduled runs](https://github.com/Sunlit-xiang/gold-workbench/actions) · [Deployment and API setup](docs/GOLD_GITHUB_DELIVERY.md)
 
-An interactive evidence river, bilingual research brief, frozen prediction ledger, automated outcomes and historical baseline comparisons. GitHub Actions collects and computes on weekdays independently of Codex or a local computer; scheduled jobs can be delayed by hours. Optional DeepSeek/Kimi commentary uses session keys or repository Secrets.
+An interactive evidence river, bilingual research brief, frozen prediction ledger, automated outcomes and historical baseline comparisons. GitHub Actions collects and computes on weekdays independently of Codex or a local computer; scheduled jobs can be delayed by hours. Optional DeepSeek/Kimi commentary uses server environment variables or repository Secrets, never browser session keys.
 
 The approved model remains **GC Proxy / research shadow / No validated Edge**. H4 lacks qualified data; D5 is not a weekly candle. Operational delivery is not evidence of predictive skill. Original Provider/Agent documentation follows.
 

@@ -1,5 +1,7 @@
 # Gold Workbench delivery · 2026-09-22
 
+> 2026-10-06 增量：首页现为 [Macro Evidence & Pricing](ARCHITECTURE.md)，旧Gold数值实验室和历史账本保留。每周日UTC05:23新增独立上游跟踪；宏观表同库加密备份。下面日期与样本是历史验收，不是当前表现。
+
 ## Architecture
 
 GitHub Actions → restore authenticated encrypted SQLite → collect Yahoo/FRED/CFTC → evaluate due outcomes → freeze approved Gold model → optional DeepSeek/Kimi commentary → encrypted state archive + append-only public ledger → GitHub Pages.
@@ -16,7 +18,7 @@ River: raw source/value/time → standardized input and fitted coefficient → a
 
 ## API configuration
 
-The window supports DeepSeek, international Kimi and China Kimi, editable model ID, session-only key, explicit connection test, Chinese/English commentary. The key is never stored in localStorage or exported. The only browser preference stored is language. Browser direct requests are subject to provider CORS; a useful failure message points to scheduled or local use. The local same-origin endpoint uses allowlisted official provider URLs and never returns upstream error bodies.
+The window supports provider/model selection and links to secure settings. Keys are configured only in server environment variables or Actions Secrets: no browser key form, no direct provider requests. Public Pages displays archived bilingual research; interactive research is local-server only. See [AI architecture](AI_ARCHITECTURE.md) for DeepSeek/Kimi/OpenAI-compatible configuration and the evidence-selecting tools.
 
 For automatic bilingual AI commentary, set repository Secrets `DEEPSEEK_API_KEY` or `MOONSHOT_API_KEY`, and Variables `ORACLE_AI_PROVIDER=deepseek|kimi|kimi-cn` and optional `ORACLE_AI_MODEL`. Default is `off`; the numerical pipeline and six-module deterministic report run without credentials. A DeepSeek key does not authenticate to Kimi. Previously pasted keys are not embedded or automatically republished to GitHub.
 

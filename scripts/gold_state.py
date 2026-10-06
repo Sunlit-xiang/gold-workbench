@@ -12,6 +12,7 @@ import tempfile
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from cryptography.fernet import Fernet
 from digital_oracle.asset_store import AssetStore
+from digital_oracle.macro_store import MacroStore
 
 
 def pack(db, output, key):
@@ -26,7 +27,6 @@ def pack(db, output, key):
             Path(output).write_bytes(Fernet(key).encrypt(payload))
     finally:
         store.close()
-
 
 def unpack(source, db, key):
     target = Path(db)
@@ -44,6 +44,13 @@ def unpack(source, db, key):
             store.list(table, 1_000_000)  # verify content hashes before using any restored evidence
     finally:
         store.close()
+
+    macro = MacroStore(target)
+    try:
+        for table in macro.TABLES:
+            macro.list(table,1_000_000)
+    finally:
+        macro.close()
 
 
 def main():

@@ -9,7 +9,7 @@ test('asset workbench is independent of Codex and validates routing', async()=>{
   try{
     const list=await fetch(base+'/api/assets').then(r=>r.json()); assert.equal(list.assets[0].id,'gold');
     const data=await fetch(base+'/api/assets/gold').then(r=>r.json()); assert.equal(data.asset.id,'gold');
-    assert.equal((await fetch(base+'/api/assets/eurusd')).status,404);
+    assert.equal((await fetch(base+'/api/assets/unregistered')).status,404);
     assert.equal((await fetch(base+'/api/assets/gold/predictions/not-a-hash')).status,404);
     assert.equal((await fetch(base+'/api/assets/gold/predictions/'+'a'.repeat(64))).status,200);
     const page=await fetch(base+'/asset.html').then(r=>r.text()); assert.match(page,/GC PROXY/);assert.match(page,/冻结账本/);
