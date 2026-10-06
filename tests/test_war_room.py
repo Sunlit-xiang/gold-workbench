@@ -31,7 +31,7 @@ class BoardTests(unittest.TestCase):
             sid=store.put('macro_snapshots',view)
             sections=[{'kind':k,'text':'已读证据仍有缺口。','evidence_ids':[]} for k in ('fact','mechanism','judgment','watch')]
             original={'id':'original','analyst':'director','phase':'plan','status':'available','work_done':True,'assignments':[{'analyst':'liquidity','question':'调查原问题。'}]}
-            final={'id':'final','analyst':'director','phase':'final','status':'available','work_done':True,'assignments':[],'sections':sections}
+            final={'id':'final','analyst':'chief','phase':'final','status':'available','work_done':True,'assignments':[],'sections':sections}
             store.put('research_runs',{'snapshot_id':sid,'language':'zh','prompt_version':PROMPT_VERSION,'reports':[original,final],'process':[{'analyst':'liquidity','question':'补证传导问题。','stage':'supplement'}]})
             result=board(store,'gold','zh',NOW)
             self.assertEqual(result['situation']['status'],'ANALYZED')

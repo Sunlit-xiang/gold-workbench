@@ -74,3 +74,9 @@ GitHub Actions 工作日 UTC 06:17：恢复认证加密 SQLite → 检查批准�
 ## 完成边界
 
 已实现事实、描述性变换、双边假设、冲突、缺口、冻结、有限工具研究员和可部署网站。pricing/OIS、真正事件报价、可靠修订历史、相似事件的条件 OOS 模型仍未取得。`NO CLEAR EDGE` 是验证门槛未通过，不是预测黄金会横盘。更完整的证据图推断与历史类比训练不是本轮已完成能力。
+## 当前交付：Vercel 按需 Macro War Room（WR-P3）
+
+此增量优先于下方历史 GitHub Pages/每日 AI 流程说明。GitHub 只负责代码版本与定时基础数据；Vercel FastAPI 提供研究交互，Vercel Workflow 分步调度团队，独立 PostgreSQL schema 保存研究事实与运行索引。模型 Secret 只属于服务端环境变量；浏览器只提交资产、provider/model 和研究请求 ID。
+
+研究前先由程序组装并冻结 Research Pack。Director 派题、Specialists 调查、Skeptic 反证、Director 有限补证，最后由 Chief Researcher 汇总；不是五个独立聊天机器人。Gold 判断/Outcome 账本继续只读，不受研究员改观点影响。每日定时任务中的所有 AI 调用已取消。[完整部署配置与剩余验收](VERCEL_WAR_ROOM.md)。
+

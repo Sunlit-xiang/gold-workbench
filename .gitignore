@@ -6,6 +6,8 @@ tmp_*.py
 web/node_modules/
 web/.env
 .venv/
+.vercel-dev/
+.vercel/
 research_data/
 web/asset-service.log
 dist/

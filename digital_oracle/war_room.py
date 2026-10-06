@@ -121,12 +121,12 @@ def board(store, asset="gold", language="zh", now=None):
     assignments = {a['analyst']:a['question'] for r in (run or {}).get('reports',[]) for a in r.get('assignments',[])}
     assignments.update({p['analyst']:p['question'] for p in (run or {}).get('process',[]) if p['stage'] in ('investigation','supplement')})
     team = []
-    for role in ("director", "liquidity", "rates", "cross_asset", "gold" if asset == "gold" else "fx", "skeptic", "events"):
+    for role in ("director", "liquidity", "rates", "cross_asset", "gold" if asset == "gold" else "fx", "skeptic", "chief", "events"):
         report = reports.get(role)
         team.append({"analyst": role, "name": pick(ROLE_NAMES[role], language), "responsibility": ROLES[role],
                      "task": assignments.get(role), "report": report,
                      "status": report["status"] if report else "not_executed", "work_done": bool(report and report.get("work_done"))})
-    chief = reports.get("director", {})
+    chief = reports.get("chief", {})
     analyzed = chief.get('status') == 'available' and chief.get('phase') == 'final'
     sections = chief.get('sections', []) if analyzed else []
     facts = [s for s in sections if s['kind'] == 'fact'][:3]

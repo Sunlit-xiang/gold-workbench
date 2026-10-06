@@ -28,6 +28,17 @@ def export_macro(db,output):
             (snapshots/(row["id"]+".json")).write_text(canonical(row),encoding="utf-8")
         for asset in ASSETS:
             (data/("macro-"+asset+".json")).write_text(canonical(macro_dashboard(store,asset)),encoding="utf-8")
+            legacy=AssetStore(db)
+            try:
+                dataset=legacy.latest('datasets') or {}
+                reduced={k:{**{f:v for f,v in s.items() if f not in ('raw','rows')},'rows':s.get('rows',[])[-400:]}
+                         for k,s in dataset.get('series',{}).items()}
+                seed={'schema_version':1,'asset_id':asset,'snapshot':macro_dashboard(store,asset),
+                      'dataset':{'id':dataset.get('id'),'created_at':dataset.get('created_at'),'series':reduced},
+                      'pit_history':[e for e in store.as_of('macro_evidence',store.latest('macro_snapshots')['as_of'],100000)
+                                     if e['asset']==asset][:600]}
+                (data/(f'oracle-seed-{asset}.json')).write_text(canonical(seed),encoding='utf-8')
+            finally:legacy.close()
             for language in ('zh','en'):
                 (data/(f"war-room-{asset}-{language}.json")).write_text(canonical(board(store,asset,language)),encoding="utf-8")
     finally:store.close()

@@ -33,7 +33,9 @@ test('research room routes bind snapshot and analyst, never accept browser secre
 test('research UI uses safe DOM rendering and does not expose browser credentials',async()=>{
   const html=await readFile(new URL('../public/war-room.html',import.meta.url),'utf8');
   const js=await readFile(new URL('../public/war-room.js',import.meta.url),'utf8');
-  assert.doesNotMatch(html,/type="password"|id="api-key"/);
+  assert.doesNotMatch(html,/id="api-key"/);
+  assert.match(html,/id="owner-password" type="password"/);
+  assert.match(html,/不是 DeepSeek Key/);
   assert.doesNotMatch(js,/Authorization:|Bearer |\.innerHTML\s*=/);
   assert.match(html,/THE BOARD/);assert.match(html,/THE TEAM/);assert.match(html,/ASK THIS ANALYST/);
   assert.match(js,/session_id|analysts\//);

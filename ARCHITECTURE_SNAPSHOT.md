@@ -1,5 +1,15 @@
 # Digital Oracle — Project Status / Architecture Snapshot
 
+## 2026-10-06 Vercel / 按需研究 WR-P3（优先于下方历史状态）
+
+- 交互部署项目 `macro-war-room`；FastAPI 同域页面/API，服务端 Secret，不依赖 Codex、浏览器本地服务或 GitHub 手工点任务。
+- 首页「开始研究」：Research Pack → Director → Specialists → Skeptic → Director 审阅/有限补证 → Chief Researcher。Vercel Python Workflow beta 拆分独立阶段；PostgreSQL 独立研究 schema 保存 append-only 原件、会话与 checkpoint。
+- AI 只按需运行，GitHub 每日任务保留基础数据和确定性 Gold 账本，移除所有团队/单研究员/自动 AI commentary 调用及其 Secret 注入。
+- Pack 先刷新登记 Provider，冻结实际值、时间、来源、变换、PIT 原归档与缺口。模型只能在读过证据、说明特定缺口后查询可信官方域名；不提供自由联网扫描市场工具。
+- 页面包含配置状态、工作台密码登录、真实阶段、历史 run、Pack 展开、Brief 和私人追问。没有 Secret/数据库时明确空状态；测试替身和 DEMO 不进入生产结果。
+- Gold 模型及原 SQLite 事实账本不迁移为云端可写数据；Vercel 只读代理公开冻结文件。没有新模型/回测/调参。
+- 当前真实 AI 与云端持久化验收需要最后统一配置 `DEEPSEEK_API_KEY`、`DATABASE_URL`、`WAR_ROOM_PASSWORD`。部署结果另以实际 READY 记录为准。[部署与验收契约](docs/VERCEL_WAR_ROOM.md)。
+
 ## 2026-10-06 产品校准增量：Macro War Room WR-P2
 
 - 默认首页改为 Situation Room：背景阅读 / 最重要的变化 / 团队分歧 / 下一观察点 → Morning Brief → 研究团队与信息流 → 行情和证据。不是原始指标监控页。
@@ -8,6 +18,7 @@
 - 没有真实 AI 报告为 **NOT YET ANALYZED**。单独 DEMO / MOCK 场景只用于交互验收，不调用研究 API、不写账本、不冒充实盘事实。原 DSH 未变更，独立 app-layer runtime 已实现，可选 DSH 接口仍未实现。
 - 本机实际浏览器验收覆盖首屏、研究桌、演示追问、退出演示；真实 Provider 晨会/持续问答尚未验收。详见[产品验收](docs/WAR_ROOM_PRODUCT_ACCEPTANCE.md)、[外部机制取舍](docs/WAR_ROOM_PRIOR_ART_REVIEW.md)。
 - 原 Gold 模型批准计算 hash 未变、本机二十条冻结预测不变。本段优先于下方历史“新团队尚未实现”的状态；公开部署另以实际工作流验收为准。
+- 本轮已发布至既有 GitHub Pages；最终构建 [37460882391](https://github.com/Sunlit-xiang/gold-workbench/actions/runs/37460882391) 成功，公开首页/JSON/JS 已读回，公开冻结预测仍六十条。本机与发布副本 318 Python / 14 Node 测试通过；真实 AI 晨会仍为未验收，不能称为正式研究全部交付。
 
 ## 2026-10-06 Macro War Room 工作进展（未完成交付）
 

@@ -11,8 +11,6 @@ from digital_oracle.asset_pipeline import collect_dataset, freeze, evaluate_due,
 from digital_oracle.gold_delivery import export_site
 from digital_oracle.macro_store import MacroStore
 from digital_oracle.macro_pipeline import collect_macro, macro_dashboard
-from digital_oracle.macro_ai import research as macro_research
-from digital_oracle.research_team import daily_team
 from digital_oracle.upstream import track
 from macro_workbench import export_macro
 
@@ -43,15 +41,10 @@ def main():
             # Initial migration bootstraps macro evidence without altering the old Gold model.
             if args.collect or not macro.latest("macro_snapshots"):
                 collect_macro(macro,store)
-                for asset in ('gold','audnzd'):
-                    for language in ('zh','en'):
-                        if os.environ.get('ORACLE_TEAM_ENABLED') == '1':
-                            daily_team(macro_dashboard(macro,asset),macro,language=language)
-                        else:
-                            macro_research(macro_dashboard(macro,asset),macro,language=language)
+                # Scheduled jobs only acquire deterministic data. Paid AI is on demand on Vercel.
             if args.upstream or not macro.latest('upstream_observations'):track(macro)
         finally:macro.close()
-        result=export_site(store,args.output)
+        result=export_site(store,args.output,with_ai=False)
         export_macro(args.db,args.output)
         print(canonical(result))
     except Exception as exc:

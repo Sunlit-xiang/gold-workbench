@@ -155,7 +155,7 @@ class TeamTests(unittest.TestCase):
             return answer
         result = daily_team(self.view,self.store,provider='deepseek',call=call)
         self.assertEqual(result['status'],'available')
-        self.assertEqual([r['analyst'] for r in result['reports']],['director','liquidity','rates','cross_asset','gold','skeptic','director','director'])
+        self.assertEqual([r['analyst'] for r in result['reports']],['director','liquidity','rates','cross_asset','gold','skeptic','director','chief'])
         self.assertIn('调查利率预期和已知利率的区别。',captured)
         self.assertTrue(any(a['tool']=='read_peer_reports' for a in result['reports'][-1]['work_log']))
         # Private followup resumes the analyst's actual daily research but is never exported.
